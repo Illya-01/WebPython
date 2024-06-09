@@ -3,15 +3,15 @@ from enum import Enum
 from typing import Optional
 
 
-# class Role(str, Enum):
-#     admin = "admin"
-#     user = "user"
+class Role(str, Enum):
+    admin = "admin"
+    user = "user"
 
 
 class User(BaseModel):
     username: str
     password: str
-    role: str
+    role: Role
 
 
 class Campground(BaseModel):

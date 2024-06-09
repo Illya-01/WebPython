@@ -5,7 +5,8 @@ from bson import ObjectId
 
 from models import Campground, User
 from security import get_current_admin
-from database import collection
+from database import campgrounds_db
+
 
 router = APIRouter()
 views = Jinja2Templates(directory="views")
@@ -15,7 +16,7 @@ views = Jinja2Templates(directory="views")
 @router.get("/", response_model=list[Campground], response_class=HTMLResponse)
 async def get_campgrounds(request: Request):
     try:
-        campgrounds = list(collection.find())
+        campgrounds = list(campgrounds_db.find())
         for campground in campgrounds:
             campground["id"] = str(campground["_id"])
         return views.TemplateResponse(
@@ -36,7 +37,7 @@ async def create_campground(
     campground: Campground, current_user: User = Depends(get_current_admin)
 ):
     try:
-        result = collection.insert_one(campground.model_dump())
+        result = campgrounds_db.insert_one(campground.model_dump())
         return {"id": str(result.inserted_id), **campground.model_dump()}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -49,7 +50,7 @@ async def create_campground(
     response_class=HTMLResponse,
 )
 async def get_campground(campground_id: str, request: Request):
-    campground = collection.find_one({"_id": ObjectId(campground_id)})
+    campground = campgrounds_db.find_one({"_id": ObjectId(campground_id)})
     if campground is not None:
         campground["id"] = str(campground["_id"])
         return views.TemplateResponse(
@@ -62,7 +63,7 @@ async def get_campground(campground_id: str, request: Request):
 # update campground
 @router.get("/{campground_id}/edit", response_class=HTMLResponse)
 async def show_campground_update_page(campground_id: str, request: Request):
-    campground = collection.find_one({"_id": ObjectId(campground_id)})
+    campground = campgrounds_db.find_one({"_id": ObjectId(campground_id)})
     if campground is not None:
         campground["id"] = str(campground["_id"])
         return views.TemplateResponse(
@@ -78,7 +79,7 @@ async def update_campground(
     campground: Campground,
     current_user: User = Depends(get_current_admin),
 ):
-    result = collection.update_one(
+    result = campgrounds_db.update_one(
         {"_id": ObjectId(campground_id)},
         {"$set": campground.model_dump(exclude_unset=True)},
     )
@@ -93,7 +94,7 @@ async def update_campground(
 async def delete_campground(
     campground_id: str, current_user: User = Depends(get_current_admin)
 ):
-    result = collection.delete_one({"_id": ObjectId(campground_id)})
+    result = campgrounds_db.delete_one({"_id": ObjectId(campground_id)})
     if result.deleted_count:
         return {"message": "Campground deleted"}
     else:

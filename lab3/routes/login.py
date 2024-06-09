@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Body, HTTPException, Request, status
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+
 from models import User
 from security import users_db
 
@@ -17,7 +18,7 @@ async def read_root(request: Request):
 async def login(user: User):
     print(f"entered login: {user.username} {user.password} {user.role}")
 
-    user_in_db = users_db.get(user.username)
+    user_in_db = users_db.find_one({"username": user.username})
     if (
         not user_in_db
         or user_in_db["password"] != user.password
