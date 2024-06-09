@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Camp Man 🏕️</title>
+
+      <link
+         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+         rel="stylesheet"
+         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+         crossorigin="anonymous" />
+
+      <script
+         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+         crossorigin="anonymous"
+         defer></script>
+   </head>
+
+   <body class="d-flex flex-column min-vh-100">
+      <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+         <div class="container-fluid">
+            <a class="navbar-brand" href="/">Camp Man</a>
+            <button
+               class="navbar-toggler"
+               type="button"
+               data-toggle="collapse"
+               data-target="#navbarNavAltMarkup"
+               aria-controls="navbarNavAltMarkup"
+               aria-expanded="false"
+               aria-label="Toggle navigation">
+               <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+               <div class="navbar-nav">
+                  <a class="nav-link" href="/">Home</a>
+                  <a class="nav-link" href="/campgrounds">Campgrounds</a>
+                  <a class="adminExtraFeature | nav-link" href="/campgrounds/new"
+                     >New Campground</a
+                  >
+               </div>
+               <a
+                  href="/"
+                  class="navbar-nav ms-auto flex-column text-center nav-link p-0">
+                  <span id="usernameInfo" class="d-block p-0"></span>
+                  <span id="roleInfo" class="d-block p-0"></span>
+               </a>
+            </div>
+         </div>
+      </nav>
+
+      <main class="container mt-4">
+         <h1 class="py-4">All Campgrounds</h1>
+
+         {% for campground in campgrounds %}
+
+         <div class="card mb-3">
+            <div class="row g-0">
+               <div class="col-md-4">
+                  <img
+                     class="img-fluid rounded-start object-fit-cover h-100"
+                     src="{{ campground.image }}"
+                     alt="picture of a campground"
+                     loading="lazy" />
+               </div>
+               <div class="col-md-8">
+                  <div class="card-body">
+                     <h5 class="card-title">{{campground.title}}</h5>
+                     <p class="card-text">{{campground.description}}</p>
+                     <a
+                        class="btn btn-primary"
+                        href="/campgrounds/{{campground._id}}">
+                        View {{campground.title}}
+                     </a>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         {% endfor %}
+      </main>
+
+      <footer class="footer bg-dark py-3 mt-auto">
+         <div class="container">
+            <span class="text-secondary">&copy; Camp Man 2024</span>
+         </div>
+      </footer>
+
+      <script>
+         const user = JSON.parse(localStorage.getItem('user'))
+         const extraFeatures = document.querySelectorAll('.adminExtraFeature')
+
+         if (user) {
+            const usernameInfo = document.querySelector('#usernameInfo')
+            const roleInfo = document.querySelector('#roleInfo')
+            usernameInfo.textContent = `login: ${user.username}`
+            roleInfo.textContent = `role: ${user.role}`
+         }
+
+         showExtraFeaturesIfAdmin()
+
+         function showExtraFeaturesIfAdmin() {
+            for (const extraFeature of extraFeatures)
+               extraFeature.style.display = 'none'
+
+            if (localStorage.getItem('user')) {
+               if (user.role === 'admin') {
+                  for (const extraFeature of extraFeatures)
+                     extraFeature.style.display = 'block'
+               }
+            }
+         }
+      </script>
+   </body>
+</html>
