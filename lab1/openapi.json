@@ -1,5 +1,5 @@
 {
-   "openapi": "3.1.0",
+   "openapi": "3.0.0",
    "info": {
       "title": "Lab1",
       "version": "1.1.0"
@@ -24,7 +24,9 @@
                   "description": "Logged in User",
                   "content": {
                      "application/json": {
-                        "$ref": "#/components/schemas/User"
+                        "schema": {
+                           "$ref": "#/components/schemas/User"
+                        }
                      }
                   }
                },
@@ -76,7 +78,9 @@
                   "description": "Campground Created Successfully",
                   "content": {
                      "application/json": {
-                        "$ref": "#/components/schemas/Campground"
+                        "schema": {
+                           "$ref": "#/components/schemas/Campground"
+                        }
                      }
                   }
                },
@@ -152,6 +156,17 @@
          "put": {
             "summary": "Edit Campground",
             "operationId": "edit_campground_campgrounds__id__put",
+            "parameters": [
+               {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                     "title": "Id",
+                     "type": "integer"
+                  }
+               }
+            ],
             "requestBody": {
                "required": true,
                "content": {
@@ -271,6 +286,17 @@
          "post": {
             "summary": "Create Review",
             "operationId": "create_review_campgrounds__campground_id__reviews_post",
+            "parameters": [
+               {
+                  "name": "campground_id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                     "title": "Campground Id",
+                     "type": "integer"
+                  }
+               }
+            ],
             "requestBody": {
                "content": {
                   "application/json": {
@@ -286,7 +312,9 @@
                   "description": "Review Created Successfully",
                   "content": {
                      "application/json": {
-                        "$ref": "#/components/schemas/Review"
+                        "schema": {
+                           "$ref": "#/components/schemas/Review"
+                        }
                      }
                   }
                },
@@ -308,6 +336,15 @@
             "summary": "Delete Review",
             "operationId": "delete_review_campgrounds__campground_id__reviews__review_id__delete",
             "parameters": [
+               {
+                  "name": "campground_id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                     "title": "Campground Id",
+                     "type": "integer"
+                  }
+               },
                {
                   "name": "review_id",
                   "in": "path",
