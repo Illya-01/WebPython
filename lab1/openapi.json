@@ -1,0 +1,484 @@
+{
+   "openapi": "3.1.0",
+   "info": {
+      "title": "Lab1",
+      "version": "1.1.0"
+   },
+   "paths": {
+      "/users/login": {
+         "post": {
+            "summary": "Log In User",
+            "operationId": "login_users_login_post",
+            "requestBody": {
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/User"
+                     }
+                  }
+               },
+               "required": true
+            },
+            "responses": {
+               "200": {
+                  "description": "Logged in User",
+                  "content": {
+                     "application/json": {
+                        "$ref": "#/components/schemas/User"
+                     }
+                  }
+               },
+               "422": {
+                  "description": "Validation Error",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/HTTPValidationError"
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/campgrounds/": {
+         "get": {
+            "summary": "Get All Campgrounds",
+            "operationId": "get_campgrounds_campgrounds__get",
+            "responses": {
+               "200": {
+                  "description": "List of Campgrounds",
+                  "content": {
+                     "text/html": {
+                        "schema": {
+                           "$ref": "#/components/schemas/CampgroundArray"
+                        }
+                     }
+                  }
+               }
+            }
+         },
+         "post": {
+            "summary": "Create Campground",
+            "operationId": "create_campground_campgrounds__post",
+            "requestBody": {
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/Campground"
+                     }
+                  }
+               },
+               "required": true
+            },
+            "responses": {
+               "200": {
+                  "description": "Campground Created Successfully",
+                  "content": {
+                     "application/json": {
+                        "$ref": "#/components/schemas/Campground"
+                     }
+                  }
+               },
+               "422": {
+                  "description": "Validation Error",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/HTTPValidationError"
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/campgrounds/new": {
+         "get": {
+            "summary": "Create New Campground",
+            "operationId": "new_campground_campgrounds_new_get",
+            "responses": {
+               "200": {
+                  "description": "Campground Creation Form",
+                  "content": {
+                     "text/html": {
+                        "schema": {
+                           "$ref": "#/components/schemas/Campground"
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/campgrounds/{id}": {
+         "get": {
+            "summary": "Get Campground",
+            "operationId": "get_campground_campgrounds__id__get",
+            "parameters": [
+               {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                     "title": "Id",
+                     "type": "integer"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "The requested campground",
+                  "content": {
+                     "text/html": {
+                        "schema": {
+                           "$ref": "#/components/schemas/Campground"
+                        }
+                     }
+                  }
+               },
+               "422": {
+                  "description": "Validation Error",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/HTTPValidationError"
+                        }
+                     }
+                  }
+               }
+            }
+         },
+         "put": {
+            "summary": "Edit Campground",
+            "operationId": "edit_campground_campgrounds__id__put",
+            "requestBody": {
+               "required": true,
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/Campground"
+                     }
+                  }
+               }
+            },
+            "responses": {
+               "200": {
+                  "description": "Campground Updated Successfully",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/Campground"
+                        }
+                     }
+                  }
+               },
+               "422": {
+                  "description": "Validation Error",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/HTTPValidationError"
+                        }
+                     }
+                  }
+               }
+            }
+         },
+         "delete": {
+            "summary": "Delete Campground",
+            "operationId": "delete_campground_campgrounds__id__delete",
+            "parameters": [
+               {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                     "title": "Id",
+                     "type": "integer"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Campground Deleted Successfully",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object",
+                           "properties": {
+                              "message": {
+                                 "type": "string"
+                              }
+                           }
+                        }
+                     }
+                  }
+               },
+               "422": {
+                  "description": "Validation Error",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/HTTPValidationError"
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/campgrounds/{id}/edit": {
+         "get": {
+            "summary": "Edit Campground",
+            "operationId": "edit_campground_campgrounds__id__edit_get",
+            "parameters": [
+               {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                     "title": "Id",
+                     "type": "integer"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Campground Edit Form",
+                  "content": {
+                     "text/html": {
+                        "schema": {
+                           "type": "string"
+                        }
+                     }
+                  }
+               },
+               "422": {
+                  "description": "Validation Error",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/HTTPValidationError"
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/campgrounds/{campground_id}/reviews": {
+         "post": {
+            "summary": "Create Review",
+            "operationId": "create_review_campgrounds__campground_id__reviews_post",
+            "requestBody": {
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/Review"
+                     }
+                  }
+               },
+               "required": true
+            },
+            "responses": {
+               "200": {
+                  "description": "Review Created Successfully",
+                  "content": {
+                     "application/json": {
+                        "$ref": "#/components/schemas/Review"
+                     }
+                  }
+               },
+               "422": {
+                  "description": "Validation Error",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/HTTPValidationError"
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/campgrounds/{campground_id}/reviews/{review_id}": {
+         "delete": {
+            "summary": "Delete Review",
+            "operationId": "delete_review_campgrounds__campground_id__reviews__review_id__delete",
+            "parameters": [
+               {
+                  "name": "review_id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                     "title": "Review Id",
+                     "type": "integer"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Review Deleted Successfully",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object",
+                           "properties": {
+                              "message": {
+                                 "type": "string"
+                              }
+                           }
+                        }
+                     }
+                  }
+               },
+               "422": {
+                  "description": "Validation Error",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/HTTPValidationError"
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/": {
+         "get": {
+            "summary": "Landing Page",
+            "operationId": "main__get",
+            "responses": {
+               "200": {
+                  "description": "Landing Page",
+                  "content": {
+                     "text/html": {
+                        "schema": {
+                           "type": "string"
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   },
+   "components": {
+      "schemas": {
+         "HTTPValidationError": {
+            "properties": {
+               "detail": {
+                  "items": {
+                     "$ref": "#/components/schemas/ValidationError"
+                  },
+                  "type": "array",
+                  "title": "Detail"
+               }
+            },
+            "type": "object",
+            "title": "HTTPValidationError"
+         },
+         "ValidationError": {
+            "properties": {
+               "loc": {
+                  "items": {
+                     "anyOf": [
+                        {
+                           "type": "string"
+                        },
+                        {
+                           "type": "integer"
+                        }
+                     ]
+                  },
+                  "type": "array",
+                  "title": "Location"
+               },
+               "msg": {
+                  "type": "string",
+                  "title": "Message"
+               },
+               "type": {
+                  "type": "string",
+                  "title": "Error Type"
+               }
+            },
+            "type": "object",
+            "required": ["loc", "msg", "type"],
+            "title": "ValidationError"
+         },
+         "Campground": {
+            "type": "object",
+            "properties": {
+               "id": {
+                  "type": "integer"
+               },
+               "title": {
+                  "type": "string"
+               },
+               "description": {
+                  "type": "string"
+               },
+               "location": {
+                  "type": "string"
+               },
+               "price": {
+                  "type": "integer"
+               },
+               "image": {
+                  "type": "string"
+               },
+               "author_id": {
+                  "type": "integer"
+               }
+            }
+         },
+         "CampgroundArray": {
+            "type": "array",
+            "items": {
+               "$ref": "#/components/schemas/Campground"
+            }
+         },
+         "User": {
+            "type": "object",
+            "properties": {
+               "id": {
+                  "type": "integer"
+               },
+               "username": {
+                  "type": "string"
+               },
+               "password": {
+                  "type": "string"
+               },
+               "role": {
+                  "type": "string"
+               }
+            }
+         },
+         "Review": {
+            "type": "object",
+            "properties": {
+               "id": {
+                  "type": "integer"
+               },
+               "text": {
+                  "type": "string"
+               },
+               "rating": {
+                  "type": "integer"
+               },
+               "author_id": {
+                  "type": "integer"
+               },
+               "campground_id": {
+                  "type": "integer"
+               }
+            }
+         }
+      }
+   }
+}

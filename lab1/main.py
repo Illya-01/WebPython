@@ -14,9 +14,9 @@ views = Jinja2Templates(directory="views")
 app.mount("/public", StaticFiles(directory="public"), name="public")
 
 
-app.include_router(reviews_router)
-app.include_router(campgrounds_router, prefix="/campgrounds")
 app.include_router(users_router, prefix="/users")
+app.include_router(campgrounds_router, prefix="/campgrounds")
+app.include_router(reviews_router)
 
 
 @app.get("/", response_class=HTMLResponse)
