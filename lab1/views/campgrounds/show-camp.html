@@ -1,0 +1,202 @@
+{% extends 'layouts/boilerplate.html' %} {% block content %}
+
+<div id="infoBox" class="alert d-none text-center mb-5" role="alert"></div>
+
+<div class="row g-5 mb-4">
+   <div class="col-9 col-md-6 mx-auto">
+      <div class="card mb-3">
+         <img
+            src="{{ campground.image }}"
+            class="card-img-top"
+            alt="camping stuff" />
+         <div class="card-body">
+            <h5 class="card-title">{{ campground.title }}</h5>
+            <p class="card-text">{{ campground.description }}</p>
+         </div>
+         <ul class="list-group list-group-flush">
+            <li class="list-group-item">{{ campground.location }}</li>
+            <li class="list-group-item text-muted">${{ campground.price }}/night</li>
+            <li class="list-group-item">
+               Submitted by:
+               <span class="fst-italic">{{ author.username }}</span>
+            </li>
+         </ul>
+      </div>
+      <div class="adminExtraFeature">
+         <a class="btn btn-primary" href="/campgrounds/{{ campground.id }}/edit"
+            >Edit</a
+         >
+         <form id="deleteCampgroundForm" class="d-inline ms-1">
+            <button class="btn btn-danger">Delete</button>
+         </form>
+      </div>
+   </div>
+
+   <div class="col-9 col-md-6 mx-auto">
+      <h2>Leave a Review</h2>
+      <form
+         id="createReviewForm"
+         method="POST"
+         novalidate
+         class="mb-3 validated-form">
+         <div class="mb-3">
+            <label class="form-label" for="rating">Rating</label>
+            <input
+               type="range"
+               min="1"
+               max="5"
+               value="5"
+               name="rating"
+               id="rating"
+               class="form-range" />
+         </div>
+
+         <div class="mb-3 position-relative">
+            <label class="form-label" for="reviewText">Review</label>
+            <textarea
+               name="text"
+               minlength="10"
+               id="reviewText"
+               class="form-control"
+               cols="30"
+               rows="3"
+               required></textarea>
+            <div class="invalid-tooltip end-0 text-danger bg-transparent">
+               Please type at least 10 characters!
+            </div>
+         </div>
+         <button class="btn btn-success">Submit</button>
+      </form>
+
+      <h2 class="mt-5 mb-4">Reviews:</h2>
+
+      {% for review in campground.reviews %}
+      <div class="card mb-3">
+         <div class="card-body">
+            <h5 class="card-title">{{ review.author.username }}</h5>
+            {% if review.rating == 1 %}
+            <p class="card-text">⭐</p>
+            {% elif review.rating == 2 %}
+            <p class="card-text">⭐⭐</p>
+            {% elif review.rating == 3 %}
+            <p class="card-text">⭐⭐⭐</p>
+            {% elif review.rating == 4 %}
+            <p class="card-text">⭐⭐⭐⭐</p>
+            {% elif review.rating == 5 %}
+            <p class="card-text">⭐⭐⭐⭐⭐</p>
+            {% endif %}
+
+            <p class="card-text">
+               <span class="fw-semibold">Review:</span> {{ review.text }}
+            </p>
+            <form
+               class="deleteReviewForm"
+               method="post"
+               data-review-id="{{ review.id }}"
+               data-review-author-id="{{ review.author.id }}">
+               <button class="btn btn-sm btn-danger">Delete</button>
+            </form>
+         </div>
+      </div>
+
+      {% endfor %}
+   </div>
+</div>
+
+{% endblock %} {% block custom_script %}
+
+<script>
+   const deleteCampgroundForm = document.querySelector('#deleteCampgroundForm')
+   const createReviewForm = document.querySelector('#createReviewForm')
+   const deleteReviewForms = document.querySelectorAll('.deleteReviewForm')
+
+   createReviewForm.addEventListener(
+      'submit',
+      async event => {
+         event.preventDefault()
+         event.stopPropagation()
+
+         createReviewForm.classList.add('was-validated')
+
+         if (createReviewForm.checkValidity()) {
+            const text = document.querySelector('#reviewText').value
+            const rating = document.querySelector('#rating').value
+
+            if (user) {
+               const reviewAuthorId = user.id
+               await createReview(
+                  text,
+                  rating,
+                  reviewAuthorId,
+                  '{{ campground.id }}'
+               )
+
+               window.location.href = `/campgrounds/{{ campground.id }}`
+            } else {
+               displayInfoBox('Please log in to leave a review!', 'danger')
+            }
+         }
+      },
+      false
+   )
+
+   for (const form of deleteReviewForms) {
+      form.addEventListener(
+         'submit',
+         async event => {
+            event.preventDefault()
+            event.stopPropagation()
+
+            const reviewId = form.dataset.reviewId
+            const reviewAuthorId = form.dataset.reviewAuthorId
+
+            // if user is the author of the review
+            if (!user || user.id != reviewAuthorId) {
+               displayInfoBox(
+                  'You are not authorized to delete this review!',
+                  'danger'
+               )
+               return
+            }
+
+            await deleteReview('{{ campground.id }}', reviewId)
+            window.location.href = `/campgrounds/{{ campground.id }}`
+         },
+         false
+      )
+   }
+
+   deleteCampgroundForm.addEventListener(
+      'submit',
+      async event => {
+         event.preventDefault()
+         event.stopPropagation()
+
+         await deleteCamp('{{ campground.id }}')
+         window.location.href = '/campgrounds'
+      },
+      false
+   )
+
+   async function deleteCamp(campground_id) {
+      const camp = await callApi(`/campgrounds/${campground_id}`, 'DELETE')
+   }
+
+   async function createReview(text, rating, review_author_id, campground_id) {
+      const review = await callApi(`/campgrounds/${campground_id}/reviews`, 'POST', {
+         text,
+         rating,
+         review_author_id,
+         campground_id,
+      })
+   }
+
+   async function deleteReview(campground_id, review_id) {
+      const review = await callApi(
+         `/campgrounds/${campground_id}/reviews/${review_id}`,
+         'DELETE'
+      )
+   }
+</script>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'layouts/boilerplate.html' %} {% block content %}
+
+<h1 class="py-4">All Campgrounds</h1>
+
+{% for campground in campgrounds %}
+
+<div class="card mb-3">
+   <div class="row g-0">
+      <div class="col-md-4">
+         <img
+            class="img-fluid rounded-start object-fit-cover h-100"
+            src="{{ campground.image }}"
+            alt="picture of a campground"
+            loading="lazy" />
+      </div>
+      <div class="col-md-8">
+         <div class="card-body">
+            <h5 class="card-title">{{campground.title}}</h5>
+            <p class="card-text">{{campground.description}}</p>
+            <p class="card-text text-muted">{{campground.location}}</p>
+            <a class="btn btn-primary" href="/campgrounds/{{ campground.id }}">
+               View {{campground.title}}
+            </a>
+         </div>
+      </div>
+   </div>
+</div>
+
+{% endfor %} {% endblock %}

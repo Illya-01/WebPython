@@ -1,0 +1,123 @@
+{% extends "layouts/boilerplate.html" %} {% block content %}
+
+<div id="infoBox" class="alert d-none text-center" role="alert"></div>
+
+<h1 class="text-center py-4">Welcome to Camp Man! 🏕️</h1>
+
+<div class="col-9 col-sm-6 col-md-4 mx-auto">
+   <h2 class="text-center mb-3">Log In</h2>
+   <form method="post" class="validated-form" novalidate>
+      <div class="mb-3 position-relative">
+         <label for="username">Username</label>
+         <input
+            type="text"
+            name="username"
+            id="username"
+            class="form-control"
+            autocomplete="on"
+            required />
+         <div class="invalid-tooltip end-0 text-danger bg-transparent">
+            Please enter a Username!
+         </div>
+      </div>
+      <div class="mb-3 position-relative">
+         <label for="password">Password</label>
+         <input
+            type="password"
+            name="password"
+            id="password"
+            class="form-control"
+            autocomplete="on"
+            required />
+         <div class="invalid-tooltip end-0 text-danger bg-transparent">
+            Please enter a Password!
+         </div>
+      </div>
+      <div class="mb-3 position-relative">
+         <label for="role">Role</label>
+         <select name="role" id="role" class="form-select" required>
+            <option value="user">user</option>
+            <option value="admin">admin</option>
+         </select>
+         <div class="invalid-tooltip end-0 text-danger bg-transparent">
+            Please select a Role!
+         </div>
+      </div>
+      <div class="mb-3">
+         <button type="submit" class="btn btn-primary">Log In</button>
+         <button id="logoutBtn" type="button" class="btn btn-secondary ms-1">
+            Log Out
+         </button>
+      </div>
+   </form>
+</div>
+
+{% endblock %} {% block custom_script %}
+
+<script>
+   const forms = document.querySelectorAll('.validated-form')
+   const logoutBtn = document.querySelector('#logoutBtn')
+
+   if (!user) {
+      logoutBtn.classList.add('d-none')
+   } else {
+      logoutBtn.classList.remove('d-none')
+   }
+
+   logoutBtn.addEventListener('click', logOut)
+   for (const form of forms) {
+      form.addEventListener('submit', handleFormSubmit, false)
+   }
+
+   async function handleFormSubmit(event) {
+      event.preventDefault()
+      event.stopPropagation()
+
+      this.classList.add('was-validated')
+
+      if (user) {
+         displayInfoBox('Please log out first!', 'danger')
+         this.classList.remove('was-validated')
+         return
+      }
+
+      if (this.checkValidity()) {
+         const username = document.querySelector('#username').value
+         const password = document.querySelector('#password').value
+         const role = document.querySelector('#role').value
+
+         await logIn(username, password, role)
+         this.classList.remove('was-validated')
+      }
+   }
+
+   async function logIn(username, password, role) {
+      user = await callApi('/users/login', 'POST', { username, password, role })
+
+      if (user) {
+         localStorage.setItem('user', JSON.stringify(user))
+         clearLoginForm()
+         displayInfoBox('Successfully logged in!', 'success')
+         setTimeout(() => {
+            window.location.href = '/campgrounds'
+         }, 1500)
+      } else {
+         displayInfoBox('Invalid credentials! Please try again!', 'danger')
+      }
+   }
+
+   function logOut() {
+      if (user) {
+         localStorage.removeItem('user')
+         window.location.href = '/'
+      }
+   }
+
+   function clearLoginForm() {
+      document.querySelector('#username').value = ''
+      document.querySelector('#password').value = ''
+      document.querySelector('#role').value = ''
+   }
+</script>
+
+{% endblock %}
