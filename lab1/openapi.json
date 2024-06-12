@@ -99,7 +99,7 @@
       },
       "/campgrounds/new": {
          "get": {
-            "summary": "Create New Campground",
+            "summary": "Campground Creation Form",
             "operationId": "new_campground_campgrounds_new_get",
             "responses": {
                "200": {
@@ -245,7 +245,7 @@
       },
       "/campgrounds/{id}/edit": {
          "get": {
-            "summary": "Edit Campground",
+            "summary": "Campground Edit Form",
             "operationId": "edit_campground_campgrounds__id__edit_get",
             "parameters": [
                {
